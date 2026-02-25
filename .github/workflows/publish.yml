@@ -34,4 +34,4 @@ jobs:
           cat .cargo/config.toml
 
       - name: Publish to CodeArtifact
-        run: cargo publish --registry rust-packages
+        run: cargo publish --registry rust-packages --allow-dirty
