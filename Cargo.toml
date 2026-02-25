@@ -1,6 +1,6 @@
 [package]
 name = "hello-world-package"
-version = "0.1.5"
+version = "0.2.0"
 edition = "2024"
 authors = ["Gayathri <gayathrivkondapalli@gmail.com>"]
 description = "A simple hello world package"

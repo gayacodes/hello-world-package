@@ -1,5 +1,5 @@
 pub fn greet() -> String {
-    "Hello from crates.io!".to_string()
+    "Hello from AWS CodeArtifact!".to_string()
 }
 
 #[cfg(test)]
@@ -8,6 +8,6 @@ mod tests {
 
     #[test]
     fn test_greet() {
-        assert_eq!(greet(), "Hello from crates.io!");
+        assert_eq!(greet(), "Hello from AWS CodeArtifact!");
     }
 }
