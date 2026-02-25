@@ -4,9 +4,9 @@ version = 4
 
 [[package]]
 name = "hello-world-package"
-version = "0.1.0"
+version = "0.2.0"
 source = "sparse+https://my-domain-627665855519.d.codeartifact.eu-north-1.amazonaws.com/cargo/rust-packages/"
-checksum = "87468bb2355ba3c703177c26fe6cdeea5fd412af48666cb98af5af78e917dd11"
+checksum = "877341f37d1b21718a7938def34e792150752db5fa7952141735e6a96eaba96c"
 
 [[package]]
 name = "test-consumer"
