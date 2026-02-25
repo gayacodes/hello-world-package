@@ -19,32 +19,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-north-1
 
-      - name: Get CodeArtifact token
-        id: codeartifact
+      - name: Get CodeArtifact token and configure registry
         run: |
           TOKEN=$(aws codeartifact get-authorization-token \
             --domain my-domain \
             --query authorizationToken \
             --output text)
-          echo "::add-mask::$TOKEN"
-          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
-
-      - name: Get registry URL
-        id: registry
-        run: |
           URL=$(aws codeartifact get-repository-endpoint \
             --domain my-domain \
             --repository rust-packages \
             --format cargo \
             --query repositoryEndpoint \
             --output text)
-          echo "url=sparse+${URL}" >> "$GITHUB_OUTPUT"
-
-      - name: Configure registry and login
-        run: |
           mkdir -p .cargo
-          printf '[registries.rust-packages]\nindex = "%s"\ncredential-provider = "cargo:token"\n' "${{ steps.registry.outputs.url }}" > .cargo/config.toml
-          cargo login --registry rust-packages "Bearer ${{ steps.codeartifact.outputs.token }}"
+          printf '[registries.rust-packages]\nindex = "sparse+%s"\ncredential-provider = "cargo:token"\n' "$URL" > .cargo/config.toml
+          echo "Bearer ${TOKEN}" | cargo login --registry rust-packages
+          cat .cargo/config.toml
 
       - name: Publish to CodeArtifact
         run: cargo publish --registry rust-packages
