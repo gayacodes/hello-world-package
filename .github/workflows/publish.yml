@@ -19,21 +19,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-north-1
 
-      - name: Get CodeArtifact token and configure registry
+      - name: Configure registry
         run: |
-          TOKEN=$(aws codeartifact get-authorization-token \
-            --domain my-domain \
-            --query authorizationToken \
-            --output text)
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           URL=$(aws codeartifact get-repository-endpoint \
             --domain my-domain \
+            --domain-owner "$ACCOUNT_ID" \
             --repository rust-packages \
             --format cargo \
             --query repositoryEndpoint \
             --output text)
           mkdir -p .cargo
-          printf '[registries.rust-packages]\nindex = "sparse+%s"\ncredential-provider = "cargo:token"\n' "$URL" > .cargo/config.toml
-          echo "Bearer ${TOKEN}" | cargo login --registry rust-packages
+          printf '[registries.rust-packages]\nindex = "sparse+%s"\ncredential-provider = "cargo:token-from-stdout aws codeartifact get-authorization-token --domain my-domain --domain-owner %s --region eu-north-1 --query authorizationToken --output text"\n' "$URL" "$ACCOUNT_ID" > .cargo/config.toml
           cat .cargo/config.toml
 
       - name: Publish to CodeArtifact
