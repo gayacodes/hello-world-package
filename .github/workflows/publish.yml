@@ -40,16 +40,11 @@ jobs:
             --output text)
           echo "url=sparse+${URL}" >> "$GITHUB_OUTPUT"
 
-      - name: Configure registry
+      - name: Configure registry and login
         run: |
           mkdir -p .cargo
-          cat > .cargo/config.toml << EOF
-          [registries.rust-packages]
-          index = "${{ steps.registry.outputs.url }}"
-          credential-provider = "cargo:token"
-          EOF
+          printf '[registries.rust-packages]\nindex = "%s"\n' "${{ steps.registry.outputs.url }}" > .cargo/config.toml
+          cargo login --registry rust-packages "Bearer ${{ steps.codeartifact.outputs.token }}"
 
       - name: Publish to CodeArtifact
-        env:
-          CARGO_REGISTRIES_RUST_PACKAGES_TOKEN: "Bearer ${{ steps.codeartifact.outputs.token }}"
         run: cargo publish --registry rust-packages
