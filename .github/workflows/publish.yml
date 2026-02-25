@@ -43,7 +43,7 @@ jobs:
       - name: Configure registry and login
         run: |
           mkdir -p .cargo
-          printf '[registries.rust-packages]\nindex = "%s"\n' "${{ steps.registry.outputs.url }}" > .cargo/config.toml
+          printf '[registries.rust-packages]\nindex = "%s"\ncredential-provider = "cargo:token"\n' "${{ steps.registry.outputs.url }}" > .cargo/config.toml
           cargo login --registry rust-packages "Bearer ${{ steps.codeartifact.outputs.token }}"
 
       - name: Publish to CodeArtifact
